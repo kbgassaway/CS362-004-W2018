@@ -1,0 +1,189 @@
+flip3 ~/cs362/assignment5/dominion 125% gdb unittest4
+GNU gdb (GDB) Red Hat Enterprise Linux 7.6.1-100.el7
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-redhat-linux-gnu".
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>...
+Reading symbols from /nfs/stak/users/gassawak/cs362/assignment5/dominion/unittest4...done.
+(gdb) break isGameOver
+Breakpoint 1 at 0x40259b: file dominion.c, line 395.
+(gdb) run
+Starting program: /nfs/stak/users/gassawak/cs362/assignment5/dominion/unittest4
+
+TESTING isGameOver():
+
+Breakpoint 1, isGameOver (state=0x7fffffff7970) at dominion.c:395
+395       if (state->supplyCount[province] == 0)
+Missing separate debuginfos, use: debuginfo-install glibc-2.17-196.el7_4.2.x86_64
+(gdb) step
+401       j = 0;
+(gdb) watch j
+Hardware watchpoint 2: j
+(gdb) step
+Hardware watchpoint 2: j
+
+Old value = 10
+New value = 0
+isGameOver (state=0x7fffffff7970) at dominion.c:402
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+406               j++;
+(gdb) step
+Hardware watchpoint 2: j
+
+Old value = 0
+New value = 1
+0x00000000004025fa in isGameOver (state=0x7fffffff7970) at dominion.c:406
+406               j++;
+(gdb) print i
+$1 = 11
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+404           if (state->supplyCount[i] == 0)
+(gdb) step
+402       for (i = 0; i < 25; i++)
+(gdb) step
+409       if ( j >= 3)
+(gdb) print j
+$2 = 1
+(gdb) print i
+$3 = 25
+(gdb) print state->supplyCount[25]
+$4 = 0
+(gdb) print state->supplyCount[26]
+$5 = 0
+(gdb) step
+414       return 0;
+(gdb) step
+415     }
+(gdb) step
+
+Watchpoint 2 deleted because the program has left the block in
+which its expression is valid.
+0x000000000040113d in main () at unittest4.c:64
+64              gameOver = isGameOver(&G);
+(gdb) step
+65              if (gameOver == 0){
+(gdb) step
+66                      printf("\nTest isGameOver() when supplyCount for province >0, for mine is 0, \n");
+(gdb) step
+
+Test isGameOver() when supplyCount for province >0, for mine is 0,
+67                      printf("for sea_hag is 0, and for treasure_map is 0. Game should be over.\n");
+(gdb) step
+for sea_hag is 0, and for treasure_map is 0. Game should be over.
+68                      printf("isGameOver(): FAIL when supplyCount for province >0, and for mine, sea_hag, and treasure_map is 0. Game should be over.\n");
+(gdb) step
+isGameOver(): FAIL when supplyCount for province >0, and for mine, sea_hag, and treasure_map is 0. Game should be over.
+69                      printf("isGameOver returned 0, expected 1\n");
+(gdb) step
+isGameOver returned 0, expected 1
+70                      passing = 0;
+(gdb) step
+91              if(passing == 1)
+(gdb) step
+94                      printf("\nAt least one of the isGameOver() tests failed.\n");
+(gdb) step
+
+At least one of the isGameOver() tests failed.
+96          return 0;
+(gdb)

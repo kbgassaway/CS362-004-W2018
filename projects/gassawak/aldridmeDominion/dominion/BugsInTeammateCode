@@ -1,0 +1,175 @@
+BugsInTeammateCode.txt
+Bug Reporting
+CS-362 400 Winter 2018
+Katie Gassaway – gassawak
+3/4/2018
+
+Bug-Reports:
+These bug reports can also be found in Assignment-5.pdf submission.
+
+The following tests were run on the refactored dominion.c code from Megan Aldridge’s (aldridme) assignment-2:
+•	cardtest1 – tests smithy card
+•	cardtest2 – tests adventurer card
+•	cardtest3 – tests village card
+•	cardtest4 – tests council room card
+•	unittest1 – tests getCost()
+•	unittest2 – tests scoreFor()
+•	unittest3 – tests getWinners()
+•	unittest4 – tests isGameOver()
+•	randomtestadventurer – automated random test generator for adventurer card
+•	randomtestcard1 – automated random test generator for village card 
+•	randomtestcard2 - automated random test generator for council room card 
+
+None of the above tests required changing of method names or parameters passed, or any other code for testing the 
+teammates dominion.c code. The first bug report below, dominion-001 “smithy draws and discards incorrectly”, reports 
+on a bug that is in part due to a bug introduced by my teammate for assignment-2 in which she has the player draw 
+four cards instead of three. But the second bug report, dominion-002 “discardCard() does not add to discard pile”, 
+is a bug that was from the original code given to the class. This bug affects every action card that calls 
+discardCard(), which is almost every action card, including the smithy card. Though none of the above unit tests 
+were specifically designed to test discardCard(), by testing multiple functions that call discardCard() and checking 
+the discard pile count, it became apparent that there is a bug in this function.
+
+
+ID:	dominion-001
+Summary:	smithy draws and discards incorrectly
+Description: 
+	When smithy card is played, the expected outcome is for the current player to add 3 cards from their deck to 
+	their hand, and to discard the smithy card, resulting in plus 2 cards to the players hand. However, the actual 
+	outcome is the current player has plus 3 cards in their hand, 1 less card in their deck than expected, and no 
+	discard cards, also the total amount of cards for the player is reduced by 1.
+
+										After		After
+				Prior to smithy Played	Expected	Actual
+Hand count		5						7			8
+Deck count		5						2			1
+Discard count	0						1			0
+Total cards		10						10			9
+
+Test case: 
+Initialize a game and make a copy of the game state. Play the smithy card using one of the game states and compare 
+expected card counts to the actual.
+
+1.	int newCards = 3;  
+2.	int discarded = 1;  
+3.	int shuffledCards = 0;  
+4.	int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;  
+5.	int i;  
+6.	int seed = 1000;  
+7.	int numPlayers = 2;  
+8.	int thisPlayer = 0;  
+9.	struct gameState G, testG;  
+10.	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy,  council_room };  
+11.	
+12.	initializeGame(numPlayers, k, seed, & G);  
+13.	----------- TEST 1: +3 cards to hand – 1 discard--------------  
+14.	memcpy( & testG, & G, sizeof(struct gameState));  
+15.	cardEffect(smithy, choice1, choice2, choice3, & testG, handpos, & bonus);  
+16.	if (testG.handCount[thisPlayer] != (G.handCount[thisPlayer] + newCards - discarded))
+17.	printf("currentPlayer hand count = %d, expected = %d\n", testG.handCount[thisPlayer], G.handCount[thisPlayer] + newCards - discarded); 
+18.	// ----------- TEST 2: -3 cards from deck, discardCount should +1 --------------  
+19.	if (testG.deckCount[thisPlayer] != (G.deckCount[thisPlayer] - newCards))
+20.	printf("currentPlayer deck count = %d, expected = %d\n", testG.deckCount[thisPlayer], G.deckCount[thisPlayer] - newCards + shuffledCards);  
+21.	if (testG.discardCount[thisPlayer] != (G.discardCount[thisPlayer] + 1))
+22.	printf("currentPlayer discard count = %d, expected = %d\n", testG.discardCount[thisPlayer], G.discardCount[thisPlayer] + 1);  
+
+While in branch gassawak-assignment-5, in the directory projects\gassawak\aldridmeDominion\dominion\ , run cardtest1, a unit 
+test for smithy card. In Test 1, the hand count is 1 more than expected. In Test 2, the deck and discard counts are both 1 
+less than expected.
+
+Affected Versions: dominion.c from projects\aldridme\dominion\ in aldridme-assignment-2 branch (also found in 
+projects\gassawak\aldridmeDominion\dominion\ in branch gassawak-assignment-5).
+
+Severity:	Minor (doesn’t crash program or affect other functions)
+Priority:	Major (unfair advantage for a popular action card)
+
+Possible cause:	This section would typically not be included in a bug report. However, the assignment-5 instructions 
+say to “explain in some details about the bug(s), such as the cause, …”. 
+
+When reviewing the refactored code for the smithy card, there is a for loop that iterates 4 times, allowing the 
+current player to draw 4 cards from their deck. 
+
+1.  int i = 0; 
+2.  //+3 Cards  
+3.	for (i = 0; i <= 3; i++) {  
+4.	    drawCard(currentPlayer, state);  
+5.	}  
+	
+The trash flag is set in the discard card function for the smithy card, which might explain why the discard count 
+does not increase and the total number of cards decreases by 1.
+
+1.	//discard card from hand  
+2.	discardCard(handPos, currentPlayer, state, 1);  
+ 
+
+
+
+
+ID:	dominion-002
+Summary:	discardCard() does not add to discard pile
+Description: 
+	When discardCard() is called with the trash flag not set (trash flag = 0), the expected outcome is for the 
+	card in the hand position (handPos) to be added the current player’s discard pile. However, by examining the 
+	card counts it is apparent the card is not added to the player’s discard pile. An example of an action card 
+	that calls discardCard and passes the hand position of the played action card, with a trash flag of 0, is 
+	village. After village is played, the discard count remains at 0, and the total card count decreases by 1. 
+	But this is not only true for the village card, every action card that calls discardCard() with a trash flag
+	of 0 does not add a card to the discard pile.
+	
+										After		After
+				Prior to village Played	Expected	Actual
+Hand count		5						5			5
+Deck count		5						4			4
+Discard count	0						1			0
+Total cards		10						10			9
+
+Test case: 
+Initialize a game and make a copy of the game state. Play the village card, or any other card that calls discardCard(), 
+using one of the game states and compare expected card counts to the actual.
+
+1.	int newCards = 1;  
+2.	int discarded = 1;  
+3.	int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;  
+4.	int i;  
+5.	int seed = 1000;  
+6.	int numPlayers = 2;  
+7.	int thisPlayer = 0;  
+8.	struct gameState G, testG;  
+9.	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy,  council_room };  
+10.	initializeGame(numPlayers, k, seed, & G);  
+11.	memcpy( & testG, & G, sizeof(struct gameState));  
+12.	cardEffect(village, choice1, choice2, choice3, & testG, handpos, & bonus);  
+13.	
+14.	if (testG.handCount[thisPlayer] != (G.handCount[thisPlayer] + newCards - discarded)) 
+15.	printf("currentPlayer hand count = %d, expected = %d\n", testG.handCount[thisPlayer], G.handCount[thisPlayer] + newCards - discarded); 
+16.	
+17.	if (testG.deckCount[thisPlayer] != (G.deckCount[thisPlayer] - newCards))
+18.	printf("currentPlayer deck count = %d, expected = %d\n", testG.deckCount[thisPlayer], G.deckCount[thisPlayer] - newCards); 
+19.	 
+20.	if (testG.discardCount[thisPlayer] != (G.discardCount[thisPlayer] + 1))
+21.	printf("currentPlayer discard count = %d, expected = %d\n", testG.discardCount[thisPlayer], G.discardCount[thisPlayer] + 1);  
+
+While in branch gassawak-assignment-5, in the directory projects\gassawak\aldridmeDominion\dominion\ , run cardtest1, 
+cardtest3, cardtest4, randomtestcard1, and randomtestcard2 (tests for smithy, village, and council room cards). 
+In every one of these unit tests, each test that checks the count of expected discard cards against the actual count fails. 
+
+Affected Versions: dominion.c from “original code” found here -
+https://github.com/aburasa/CS362-004-W2018/blob/master/projects/aburasa/dominion/dominion.c
+(also found in projects\gassawak\aldridmeDominion\dominion\ in branch gassawak-assignment-5).
+
+Severity:	Major (doesn’t crash program but function is executed frequently and is detrimental to the play 
+			and outcome of the game)
+Priority:	Major (bug would be obvious to players, giving them a negative experience)
+
+Possible cause:	This section would typically not be included in a bug report. However, the assignment-5 instructions 
+say to “explain in some details about the bug(s), such as the cause, …”. 
+
+When reviewing the discardCard(), when the trash flag is not set (trashFlag < 1), the player’s card at the given 
+hand position is placed in the played cards pile and not the discard cards pile. The discardCard() never accesses 
+any discard pile (meaning state→discard[currentPlayer][handPos] never appears in the function).
+
+1.	//if card is not trashed, added to Played pile  
+2.	if (trashFlag < 1) { 
+3.	    //add card to played pile  
+4.	    state->playedCards[state->playedCardCount] = state->hand[currentPlayer][handPos];  
+5.	    state->playedCardCount++;  
+6.	}  
